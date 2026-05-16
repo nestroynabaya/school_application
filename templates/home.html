@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - School Admissions{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="display-4">Welcome to School Admissions</h1>
+        <p class="lead">Find and apply to your preferred school easily.</p>
+        <a href="{% url 'schools' %}" class="btn btn-primary btn-lg mt-3">Browse Schools</a>
+    </div>
+</div>
+{% endblock %}
