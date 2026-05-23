@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register Your School — EduApply{% endblock %}
+
+{% block content %}
+<section class="register-school-section">
+    <div class="rs-bg">
+        <div class="rs-shape-1"></div>
+        <div class="rs-shape-2"></div>
+    </div>
+    <div class="container py-5 mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="rs-header text-center mb-5">
+                    <span class="section-tag">For Schools</span>
+                    <h1 class="rs-title">Register Your School</h1>
+                    <p class="rs-subtitle">
+                        Fill in your school's details below. Our admin team will review and verify your application before your school goes live on the platform.
+                    </p>
+                    <div class="rs-steps">
+                        <div class="rs-step active">
+                            <div class="rs-step-num">1</div>
+                            <span>Submit Details</span>
+                        </div>
+                        <div class="rs-step-line"></div>
+                        <div class="rs-step">
+                            <div class="rs-step-num">2</div>
+                            <span>Admin Review</span>
+                        </div>
+                        <div class="rs-step-line"></div>
+                        <div class="rs-step">
+                            <div class="rs-step-num">3</div>
+                            <span>Go Live</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rs-card">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Section 1: Basic Info -->
+                        <div class="rs-form-section">
+                            <h5 class="rs-form-section-title">
+                                <i class="bi bi-building"></i> School Information
+                            </h5>
+                            <div class="row gy-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">School Name *</label>
+                                    <input type="text" name="school_name" class="form-control rs-input" placeholder="e.g. Greenfield Academy" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">School Type *</label>
+                                    <select name="school_type" class="form-select rs-input" required>
+                                        <option value="" disabled selected>Select type</option>
+                                        <option>Nursery</option>
+                                        <option>Primary</option>
+                                        <option>Secondary</option>
+                                        <option>University</option>
+                                        <option>Vocational/Technical</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Registration Number *</label>
+                                    <input type="text" name="reg_number" class="form-control rs-input" placeholder="Official registration number" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Year Established *</label>
+                                    <input type="number" name="year_established" class="form-control rs-input" placeholder="e.g. 1998" min="1800" max="2026" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-rs">School Description *</label>
+                                    <textarea name="description" class="form-control rs-input" rows="4" placeholder="Describe your school, its mission, values and programmes offered..." required></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 2: Location -->
+                        <div class="rs-form-section">
+                            <h5 class="rs-form-section-title">
+                                <i class="bi bi-geo-alt"></i> Location
+                            </h5>
+                            <div class="row gy-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">District / City *</label>
+                                    <input type="text" name="city" class="form-control rs-input" placeholder="e.g. Kampala" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Region *</label>
+                                    <input type="text" name="region" class="form-control rs-input" placeholder="e.g. Central Region" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-rs">Physical Address *</label>
+                                    <input type="text" name="address" class="form-control rs-input" placeholder="Street address or P.O. Box" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 3: Contact -->
+                        <div class="rs-form-section">
+                            <h5 class="rs-form-section-title">
+                                <i class="bi bi-person-badge"></i> Contact Person
+                            </h5>
+                            <div class="row gy-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Contact Person Name *</label>
+                                    <input type="text" name="contact_name" class="form-control rs-input" placeholder="Full name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Position / Title *</label>
+                                    <input type="text" name="contact_title" class="form-control rs-input" placeholder="e.g. Head Teacher, Principal" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Email Address *</label>
+                                    <input type="email" name="email" class="form-control rs-input" placeholder="school@email.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Phone Number *</label>
+                                    <input type="tel" name="phone" class="form-control rs-input" placeholder="+256 700 000000" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Create Password *</label>
+                                    <input type="password" name="password" class="form-control rs-input" placeholder="Create account password" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Confirm Password *</label>
+                                    <input type="password" name="confirm_password" class="form-control rs-input" placeholder="Repeat password" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section 4: Documents -->
+                        <div class="rs-form-section">
+                            <h5 class="rs-form-section-title">
+                                <i class="bi bi-file-earmark-text"></i> Supporting Documents
+                            </h5>
+                            <p class="rs-form-note">Upload documents to verify your school's legitimacy. Accepted formats: PDF, JPG, PNG.</p>
+                            <div class="row gy-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">Registration Certificate *</label>
+                                    <input type="file" name="reg_certificate" class="form-control rs-input" accept=".pdf,.jpg,.png" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-rs">School Logo</label>
+                                    <input type="file" name="school_logo" class="form-control rs-input" accept=".jpg,.png">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-rs">Any Other Supporting Document</label>
+                                    <input type="file" name="other_doc" class="form-control rs-input" accept=".pdf,.jpg,.png">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="rs-terms" required>
+                            <label class="form-check-label" for="rs-terms">
+                                I confirm that all information provided is accurate and I am authorized to register this school on EduApply.
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-rs-submit w-100">
+                            Submit for Review <i class="bi bi-send ms-2"></i>
+                        </button>
+
+                        <p class="text-center mt-4 rs-login-prompt">
+                            Already registered? <a href="{% url 'login' %}">Login to your school account →</a>
+                        </p>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

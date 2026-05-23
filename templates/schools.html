@@ -1,17 +1,134 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Schools - School Admissions{% endblock %}
+{% block title %}Browse Schools — EduApply{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Available Schools</h2>
-<div class="row">
-    <!-- Schools will be listed here dynamically later -->
-    <div class="col-md-4">
-        <div class="card p-3 mb-4">
-            <h5 class="card-title">School Name</h5>
-            <p class="card-text">Location, details about the school.</p>
-            <a href="#" class="btn btn-primary">Apply Now</a>
+<section class="schools-listing-section">
+    <div class="container py-5 mt-5">
+
+        <!-- Page Header -->
+        <div class="schools-listing-header">
+            <h1 class="schools-listing-title">Browse Schools</h1>
+            <p class="schools-listing-subtitle">Find the right school for your future</p>
         </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="row gy-3 align-items-center">
+                <div class="col-lg-5">
+                    <div class="search-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="form-control filter-input" placeholder="Search schools by name or location...">
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <select class="form-select filter-input">
+                        <option value="">All Types</option>
+                        <option>Nursery</option>
+                        <option>Primary</option>
+                        <option>Secondary</option>
+                        <option>University</option>
+                        <option>Vocational</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <select class="form-select filter-input">
+                        <option value="">All Regions</option>
+                        <option>Central</option>
+                        <option>Eastern</option>
+                        <option>Western</option>
+                        <option>Northern</option>
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <button class="btn btn-filter w-100">
+                        <i class="bi bi-funnel me-2"></i> Filter Results
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Count -->
+        <div class="results-info">
+            <span>Showing <strong>6</strong> schools</span>
+        </div>
+
+        <!-- Schools Grid -->
+        <div class="row gy-4">
+
+            {% comment %} These are placeholder cards — will be dynamic later {% endcomment %}
+
+            {% for i in "123456" %}
+            <div class="col-lg-4 col-md-6">
+                <div class="school-card">
+                    <div class="school-card-img" style="background: linear-gradient(135deg,
+                        {% if forloop.counter == 1 %}#1a1a2e, #16213e
+                        {% elif forloop.counter == 2 %}#0f3460, #533483
+                        {% elif forloop.counter == 3 %}#1b4332, #2d6a4f
+                        {% elif forloop.counter == 4 %}#7b2d00, #c44b4b
+                        {% elif forloop.counter == 5 %}#1a237e, #283593
+                        {% else %}#37474f, #546e7a{% endif %});">
+                        <div class="school-level-badge">
+                            {% if forloop.counter == 1 %}Secondary
+                            {% elif forloop.counter == 2 %}Primary
+                            {% elif forloop.counter == 3 %}University
+                            {% elif forloop.counter == 4 %}Vocational
+                            {% elif forloop.counter == 5 %}Secondary
+                            {% else %}Primary{% endif %}
+                        </div>
+                        <div class="school-logo-placeholder">
+                            {% if forloop.counter == 1 %}GA
+                            {% elif forloop.counter == 2 %}SM
+                            {% elif forloop.counter == 3 %}KU
+                            {% elif forloop.counter == 4 %}TC
+                            {% elif forloop.counter == 5 %}NA
+                            {% else %}EP{% endif %}
+                        </div>
+                    </div>
+                    <div class="school-card-body">
+                        <h5 class="school-name">
+                            {% if forloop.counter == 1 %}Greenfield Academy
+                            {% elif forloop.counter == 2 %}St. Mary's College
+                            {% elif forloop.counter == 3 %}Kira University
+                            {% elif forloop.counter == 4 %}Tech City Institute
+                            {% elif forloop.counter == 5 %}Nile Academy
+                            {% else %}Excel Primary School{% endif %}
+                        </h5>
+                        <p class="school-location">
+                            <i class="bi bi-geo-alt"></i>
+                            {% if forloop.counter == 1 %}Kampala
+                            {% elif forloop.counter == 2 %}Entebbe
+                            {% elif forloop.counter == 3 %}Jinja
+                            {% elif forloop.counter == 4 %}Kampala
+                            {% elif forloop.counter == 5 %}Gulu
+                            {% else %}Mbarara{% endif %}, Uganda
+                        </p>
+                        <p class="school-desc">A verified institution offering quality education and a supportive learning environment for all students.</p>
+                        <div class="school-card-footer">
+                            <span class="school-tag">Verified ✓</span>
+                            <a href="{% url 'apply' forloop.counter %}" class="btn btn-school-view">View School</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-wrap mt-5">
+            <nav>
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled"><a class="page-link" href="#">←</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">→</a></li>
+                </ul>
+            </nav>
+        </div>
+
     </div>
-</div>
+</section>
 {% endblock %}
