@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}School Details — EduApply{% endblock %}
+{% block title %}{{ school.name }} — Apply{% endblock %}
 
 {% block content %}
 <section class="school-detail-section">
@@ -11,17 +11,23 @@
         <div class="school-detail-banner" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
             <div class="school-detail-banner-overlay"></div>
             <div class="school-detail-banner-content">
-                <div class="school-detail-logo">GA</div>
+                <div class="school-detail-logo">
+                    {% if school.logo %}
+                        <img src="{{ school.logo.url }}" alt="{{ school.name }}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
+                    {% else %}
+                        {{ school.name|slice:":2"|upper }}
+                    {% endif %}
+                </div>
                 <div class="school-detail-info">
-                    <div class="school-level-badge mb-2">Secondary School</div>
-                    <h1 class="school-detail-name">Greenfield Academy</h1>
+                    <div class="school-level-badge mb-2">{{ school.get_category_display }}</div>
+                    <h1 class="school-detail-name">{{ school.name }}</h1>
                     <p class="school-detail-location">
-                        <i class="bi bi-geo-alt me-1"></i> Kampala, Central Region, Uganda
+                        <i class="bi bi-geo-alt me-1"></i> {{ school.city }}, {{ school.region }}, Uganda
                     </p>
                     <div class="school-detail-meta">
-                        <span><i class="bi bi-calendar3 me-1"></i> Est. 2001</span>
+                        <span><i class="bi bi-calendar3 me-1"></i> Est. {{ school.year_established }}</span>
                         <span><i class="bi bi-patch-check me-1"></i> Verified School</span>
-                        <span><i class="bi bi-telephone me-1"></i> +256 700 000000</span>
+                        <span><i class="bi bi-telephone me-1"></i> {{ school.phone }}</span>
                     </div>
                 </div>
             </div>
@@ -31,171 +37,83 @@
 
             <!-- Left: School Details -->
             <div class="col-lg-8">
-
-                <!-- About -->
                 <div class="detail-card">
                     <h4 class="detail-card-title"><i class="bi bi-info-circle me-2"></i>About the School</h4>
-                    <p>Greenfield Academy is a premier secondary institution located in the heart of Kampala, Uganda. Founded in 2001, the school has consistently produced top-performing students in national examinations and co-curricular activities.</p>
-                    <p>Our mission is to provide a holistic education that nurtures intellectual curiosity, moral integrity, and leadership qualities in every student. We offer both O-Level and A-Level programmes with a focus on sciences and humanities.</p>
+                    <p>{{ school.description }}</p>
                 </div>
-
-                <!-- Programmes Offered -->
-                <div class="detail-card mt-4">
-                    <h4 class="detail-card-title"><i class="bi bi-book me-2"></i>Programmes Offered</h4>
-                    <div class="row gy-3 mt-1">
-                        <div class="col-md-6">
-                            <div class="programme-item">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                O-Level (Senior 1 – 4)
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="programme-item">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                A-Level (Senior 5 – 6)
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="programme-item">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                Sciences & Mathematics
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="programme-item">
-                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                Humanities & Social Sciences
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Requirements -->
-                <div class="detail-card mt-4">
-                    <h4 class="detail-card-title"><i class="bi bi-clipboard-check me-2"></i>Admission Requirements</h4>
-                    <ul class="requirements-list">
-                        <li>Completed Primary Leaving Examination (PLE) certificate</li>
-                        <li>Birth certificate or valid identification</li>
-                        <li>Two recent passport-size photographs</li>
-                        <li>Transfer letter from previous school (if applicable)</li>
-                        <li>Completed application form with guardian signature</li>
-                    </ul>
-                </div>
-
             </div>
 
             <!-- Right: Apply Sidebar -->
             <div class="col-lg-4">
                 <div class="apply-sidebar">
-
                     <div class="apply-sidebar-header">
                         <h5>Apply to This School</h5>
                         <p>Applications are currently open</p>
                         <div class="apply-deadline">
-                            <i class="bi bi-clock me-1"></i> Deadline: 30 June 2026
+                            <i class="bi bi-cash me-1"></i> Application Fee: UGX {{ school.application_fee }}
                         </div>
                     </div>
 
                     {% if user.is_authenticated %}
-                    <!-- Show apply button if logged in -->
-                    <a href="#applyForm" class="btn btn-apply-now w-100">
-                        Apply Now <i class="bi bi-arrow-right ms-2"></i>
-                    </a>
+                        {% if payment_made %}
+                            <a href="#applyForm" class="btn btn-apply-now w-100">
+                                Fill Application <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'initiate_payment' school.id %}" class="btn btn-apply-now w-100">
+                            Pay UGX {{ school.application_fee }} & Apply <i class="bi bi-credit-card ms-2"></i>
+                            </a>
+                        {% endif %}
                     {% else %}
-                    <!-- Prompt to login if not logged in -->
                     <div class="apply-login-prompt">
                         <i class="bi bi-lock-fill"></i>
                         <p>You need an account to apply to this school.</p>
-                        <a href="{% url 'login' %}" class="btn btn-apply-now w-100 mb-2">
-                            Login to Apply
-                        </a>
-                        <a href="{% url 'login' %}" class="btn btn-apply-ghost w-100">
-                            Create Account
-                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-apply-now w-100 mb-2">Login to Apply</a>
+                        <a href="{% url 'login' %}" class="btn btn-apply-ghost w-100">Create Account</a>
                     </div>
                     {% endif %}
 
                     <div class="sidebar-info-list mt-4">
                         <div class="sidebar-info-item">
                             <span class="sii-label">School Type</span>
-                            <span class="sii-value">Secondary</span>
+                            <span class="sii-value">{{ school.get_category_display }}</span>
                         </div>
                         <div class="sidebar-info-item">
                             <span class="sii-label">Location</span>
-                            <span class="sii-value">Kampala</span>
+                            <span class="sii-value">{{ school.city }}</span>
                         </div>
                         <div class="sidebar-info-item">
                             <span class="sii-label">Established</span>
-                            <span class="sii-value">2001</span>
+                            <span class="sii-value">{{ school.year_established }}</span>
+                        </div>
+                        <div class="sidebar-info-item">
+                            <span class="sii-label">Email</span>
+                            <span class="sii-value">{{ school.email }}</span>
                         </div>
                         <div class="sidebar-info-item">
                             <span class="sii-label">Status</span>
                             <span class="sii-value verified">✓ Verified</span>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
 
-        <!-- Application Form (shown when logged in) -->
-        {% if user.is_authenticated %}
+        <!-- Application Form -->
+        {% if user.is_authenticated and payment_made %}
         <div class="apply-form-section mt-5" id="applyForm">
             <h3 class="apply-form-title">Application Form</h3>
-            <p class="apply-form-subtitle">Fill in the form below to apply to <strong>Greenfield Academy</strong></p>
-
+            <p class="apply-form-subtitle">Fill in the form below to apply to <strong>{{ school.name }}</strong></p>
             <div class="apply-form-card">
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row gy-3">
+                        {% for field in form %}
                         <div class="col-md-6">
-                            <label class="form-label-rs">Full Name *</label>
-                            <input type="text" class="form-control rs-input" placeholder="Your full name" required>
+                            <label class="form-label-rs">{{ field.label }}</label>
+                            {{ field }}
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label-rs">Date of Birth *</label>
-                            <input type="date" class="form-control rs-input" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label-rs">Gender *</label>
-                            <select class="form-select rs-input" required>
-                                <option value="" disabled selected>Select gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label-rs">Programme Applying For *</label>
-                            <select class="form-select rs-input" required>
-                                <option value="" disabled selected>Select programme</option>
-                                <option>O-Level (Senior 1)</option>
-                                <option>A-Level (Senior 5)</option>
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label-rs">Guardian / Parent Name *</label>
-                            <input type="text" class="form-control rs-input" placeholder="Guardian full name" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label-rs">Guardian Phone *</label>
-                            <input type="tel" class="form-control rs-input" placeholder="+256 700 000000" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label-rs">Previous School</label>
-                            <input type="text" class="form-control rs-input" placeholder="Name of previous school">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label-rs">Upload PLE/Results Certificate *</label>
-                            <input type="file" class="form-control rs-input" accept=".pdf,.jpg,.png" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label-rs">Upload Birth Certificate *</label>
-                            <input type="file" class="form-control rs-input" accept=".pdf,.jpg,.png" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label-rs">Additional Notes</label>
-                            <textarea class="form-control rs-input" rows="3" placeholder="Any additional information you'd like the school to know..."></textarea>
-                        </div>
+                        {% endfor %}
                     </div>
                     <div class="mt-4">
                         <button type="submit" class="btn btn-rs-submit px-5">

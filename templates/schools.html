@@ -9,112 +9,100 @@
 
         <!-- Page Header -->
         <div class="schools-listing-header">
-            <h1 class="schools-listing-title">Browse Schools</h1>
-            <p class="schools-listing-subtitle">Find the right school for your future</p>
+            <h1 class="schools-listing-title">
+                {% if category_slug %}
+                    {{ category }}
+                {% else %}
+                    All Schools
+                {% endif %}
+            </h1>
+            <p class="schools-listing-subtitle">
+                {% if category_slug %}
+                    Showing all verified {{ category|lower }} on EduApply
+                {% else %}
+                    Browse all institutions and find the right fit for your future
+                {% endif %}
+            </p>
+            {% if category_slug %}
+            <a href="{% url 'schools' %}" class="back-link">
+                <i class="bi bi-arrow-left me-1"></i> Back to All Schools
+            </a>
+            {% endif %}
         </div>
 
         <!-- Filters -->
-        <div class="filters-bar">
-            <div class="row gy-3 align-items-center">
-                <div class="col-lg-5">
-                    <div class="search-wrap">
-                        <i class="bi bi-search"></i>
-                        <input type="text" class="form-control filter-input" placeholder="Search schools by name or location...">
-                    </div>
+<div class="filters-bar">
+    <form method="GET">
+        <div class="row gy-3 align-items-center">
+            <div class="col-lg-5">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="search" class="form-control filter-input" placeholder="Search schools by name or location..." value="{{ search }}">
                 </div>
-                <div class="col-lg-2 col-6">
-                    <select class="form-select filter-input">
-                        <option value="">All Types</option>
-                        <option>Nursery</option>
-                        <option>Primary</option>
-                        <option>Secondary</option>
-                        <option>University</option>
-                        <option>Vocational</option>
-                    </select>
+            </div>
+            <div class="col-lg-2 col-6">
+                <select name="category" class="form-select filter-input">
+                    <option value="">All Types</option>
+                    <option value="nursery" {% if selected_category == 'nursery' %}selected{% endif %}>Nursery</option>
+                    <option value="primary" {% if selected_category == 'primary' %}selected{% endif %}>Primary</option>
+                    <option value="secondary" {% if selected_category == 'secondary' %}selected{% endif %}>Secondary</option>
+                    <option value="university" {% if selected_category == 'university' %}selected{% endif %}>University</option>
+                    <option value="vocational" {% if selected_category == 'vocational' %}selected{% endif %}>Vocational</option>
+                </select>
+            </div>
+            <div class="col-lg-2 col-6">
+                <input type="text" name="region" class="form-control filter-input" placeholder="Region..." value="{{ region }}">
+            </div>
+            <div class="col-lg-3">
+                <button type="submit" class="btn btn-filter w-100">
+                    <i class="bi bi-funnel me-2"></i> Filter Results
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+      <!-- Results Count -->
+<div class="results-info">
+    <span>Showing <strong>{{ schools|length }}</strong> school{{ schools|length|pluralize }}</span>
+</div>
+
+<!-- Schools Grid -->
+<div class="row gy-4">
+    {% for school in schools %}
+    <div class="col-lg-4 col-md-6">
+        <div class="school-card">
+            <div class="school-card-img" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
+                <div class="school-level-badge">{{ school.get_category_display }}</div>
+                <div class="school-logo-placeholder">
+                    {% if school.logo %}
+                        <img src="{{ school.logo.url }}" alt="{{ school.name }}">
+                    {% else %}
+                        {{ school.name|slice:":2"|upper }}
+                    {% endif %}
                 </div>
-                <div class="col-lg-2 col-6">
-                    <select class="form-select filter-input">
-                        <option value="">All Regions</option>
-                        <option>Central</option>
-                        <option>Eastern</option>
-                        <option>Western</option>
-                        <option>Northern</option>
-                    </select>
-                </div>
-                <div class="col-lg-3">
-                    <button class="btn btn-filter w-100">
-                        <i class="bi bi-funnel me-2"></i> Filter Results
-                    </button>
+            </div>
+            <div class="school-card-body">
+                <h5 class="school-name">{{ school.name }}</h5>
+                <p class="school-location">
+                    <i class="bi bi-geo-alt"></i> {{ school.city }}, Uganda
+                </p>
+                <p class="school-desc">{{ school.description|truncatewords:20 }}</p>
+                <div class="school-card-footer">
+                    <span class="school-tag">Verified ✓</span>
+                    <a href="{% url 'school_detail' school.id %}" class="btn btn-school-view">View School</a>
                 </div>
             </div>
         </div>
-
-        <!-- Results Count -->
-        <div class="results-info">
-            <span>Showing <strong>6</strong> schools</span>
-        </div>
-
-        <!-- Schools Grid -->
-        <div class="row gy-4">
-
-            {% comment %} These are placeholder cards — will be dynamic later {% endcomment %}
-
-            {% for i in "123456" %}
-            <div class="col-lg-4 col-md-6">
-                <div class="school-card">
-                    <div class="school-card-img" style="background: linear-gradient(135deg,
-                        {% if forloop.counter == 1 %}#1a1a2e, #16213e
-                        {% elif forloop.counter == 2 %}#0f3460, #533483
-                        {% elif forloop.counter == 3 %}#1b4332, #2d6a4f
-                        {% elif forloop.counter == 4 %}#7b2d00, #c44b4b
-                        {% elif forloop.counter == 5 %}#1a237e, #283593
-                        {% else %}#37474f, #546e7a{% endif %});">
-                        <div class="school-level-badge">
-                            {% if forloop.counter == 1 %}Secondary
-                            {% elif forloop.counter == 2 %}Primary
-                            {% elif forloop.counter == 3 %}University
-                            {% elif forloop.counter == 4 %}Vocational
-                            {% elif forloop.counter == 5 %}Secondary
-                            {% else %}Primary{% endif %}
-                        </div>
-                        <div class="school-logo-placeholder">
-                            {% if forloop.counter == 1 %}GA
-                            {% elif forloop.counter == 2 %}SM
-                            {% elif forloop.counter == 3 %}KU
-                            {% elif forloop.counter == 4 %}TC
-                            {% elif forloop.counter == 5 %}NA
-                            {% else %}EP{% endif %}
-                        </div>
-                    </div>
-                    <div class="school-card-body">
-                        <h5 class="school-name">
-                            {% if forloop.counter == 1 %}Greenfield Academy
-                            {% elif forloop.counter == 2 %}St. Mary's College
-                            {% elif forloop.counter == 3 %}Kira University
-                            {% elif forloop.counter == 4 %}Tech City Institute
-                            {% elif forloop.counter == 5 %}Nile Academy
-                            {% else %}Excel Primary School{% endif %}
-                        </h5>
-                        <p class="school-location">
-                            <i class="bi bi-geo-alt"></i>
-                            {% if forloop.counter == 1 %}Kampala
-                            {% elif forloop.counter == 2 %}Entebbe
-                            {% elif forloop.counter == 3 %}Jinja
-                            {% elif forloop.counter == 4 %}Kampala
-                            {% elif forloop.counter == 5 %}Gulu
-                            {% else %}Mbarara{% endif %}, Uganda
-                        </p>
-                        <p class="school-desc">A verified institution offering quality education and a supportive learning environment for all students.</p>
-                        <div class="school-card-footer">
-                            <span class="school-tag">Verified ✓</span>
-                            <a href="{% url 'apply' forloop.counter %}" class="btn btn-school-view">View School</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-
-        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <i class="bi bi-building" style="font-size:3rem; color: var(--text-light);"></i>
+        <p class="text-muted mt-3">No schools found in this category yet.</p>
+        <a href="{% url 'schools' %}" class="btn btn-school-view mt-2">View All Schools</a>
+    </div>
+    {% endfor %}
+</div>
 
         <!-- Pagination -->
         <div class="pagination-wrap mt-5">

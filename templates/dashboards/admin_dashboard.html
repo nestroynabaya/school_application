@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard — Apply{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="container py-5 mt-3">
+
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Admin Dashboard</h1>
+                <p class="dashboard-subtitle">Manage schools, applications and users</p>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row gy-3 mb-5">
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(165,28,48,0.1); color: var(--accent);">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">{{ all_schools|length }}</span>
+                        <span class="dash-stat-label">Total Schools</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(245,158,11,0.1); color: #d97706;">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">{{ pending_schools|length }}</span>
+                        <span class="dash-stat-label">Pending Approval</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(16,185,129,0.1); color: #059669;">
+                        <i class="bi bi-send"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">{{ all_applications|length }}</span>
+                        <span class="dash-stat-label">Total Applications</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">{{ all_users|length }}</span>
+                        <span class="dash-stat-label">Total Users</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Schools -->
+        <div class="dash-card mb-4">
+            <div class="dash-card-header">
+                <h5>Schools Pending Approval</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table dash-table">
+                    <thead>
+                        <tr>
+                            <th>School Name</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Reg. Number</th>
+                            <th>Contact</th>
+                            <th>Fee</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for school in pending_schools %}
+                        <tr>
+                            <td><strong>{{ school.name }}</strong></td>
+                            <td>{{ school.get_category_display }}</td>
+                            <td>{{ school.city }}, {{ school.region }}</td>
+                            <td>{{ school.registration_number }}</td>
+                            <td>
+                                {{ school.email }}<br>
+                                <small class="text-muted">{{ school.phone }}</small>
+                            </td>
+                            <td>UGX {{ school.application_fee }}</td>
+                            <td>
+                                <a href="{% url 'approve_school' school.id %}" class="btn btn-sm btn-success me-1">Approve</a>
+                                <a href="{% url 'reject_school' school.id %}" class="btn btn-sm btn-danger">Reject</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                No schools pending approval.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- All Schools -->
+        <div class="dash-card mb-4">
+            <div class="dash-card-header">
+                <h5>All Schools</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table dash-table">
+                    <thead>
+                        <tr>
+                            <th>School Name</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Fee</th>
+                            <th>Status</th>
+                            <th>Featured</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for school in all_schools %}
+                        <tr>
+                            <td><strong>{{ school.name }}</strong></td>
+                            <td>{{ school.get_category_display }}</td>
+                            <td>{{ school.city }}</td>
+                            <td>UGX {{ school.application_fee }}</td>
+                            <td>
+                                <span class="status-badge status-{{ school.status }}">
+                                    {{ school.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if school.is_featured %}
+                                    <span class="status-badge status-accepted">Yes</span>
+                                {% else %}
+                                    <span class="status-badge status-unpaid">No</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">No schools registered yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- All Users -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h5>All Users</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table dash-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in all_users %}
+                        <tr>
+                            <td><strong>{{ u.get_full_name|default:u.username }}</strong></td>
+                            <td>{{ u.email }}</td>
+                            <td>{{ u.phone|default:"—" }}</td>
+                            <td>
+                                <span class="status-badge status-{{ u.role }}">
+                                    {{ u.get_role_display }}
+                                </span>
+                            </td>
+                            <td>{{ u.date_joined|date:"d M Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">No users yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

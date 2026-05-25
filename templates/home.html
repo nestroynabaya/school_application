@@ -23,43 +23,55 @@
                     <a href="{% url 'schools' %}" class="btn btn-hero-primary">
                         Browse Schools <i class="bi bi-arrow-right ms-2"></i>
                     </a>
-                    <a href="{% url 'login' %}" class="btn btn-hero-ghost">
-                        I have an account
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6 hero-visual d-none d-lg-flex">
-                <div class="hero-card-stack">
-                    <div class="floating-card card-1">
-                        <div class="fc-icon">🎓</div>
-                        <div class="fc-text">
-                            <strong>Application Submitted</strong>
-                            <span>Greenfield Academy</span>
-                        </div>
-                        <div class="fc-badge success">Sent ✓</div>
-                    </div>
-                    <div class="floating-card card-2">
-                        <div class="fc-icon">📋</div>
-                        <div class="fc-text">
-                            <strong>Under Review</strong>
-                            <span>St. Mary's College</span>
-                        </div>
-                        <div class="fc-badge review">In Review</div>
-                    </div>
-                    <div class="floating-card card-3">
-                        <div class="fc-icon">🏆</div>
-                        <div class="fc-text">
-                            <strong>Congratulations!</strong>
-                            <span>You've been accepted</span>
-                        </div>
-                        <div class="fc-badge accepted">Accepted!</div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- Featured Schools -->
+<section class="schools-section">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-end">
+            <div>
+                <span class="section-tag">Featured</span>
+                <h2 class="section-title">Featured Schools</h2>
+            </div>
+            <a href="{% url 'schools' %}" class="btn btn-outline-view">View All Schools →</a>
+        </div>
+        <div class="row gy-4 mt-3">
+            {% for school in featured_schools %}
+            <div class="col-lg-4 col-md-6">
+                <div class="school-card">
+                    <div class="school-card-img" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
+                        <div class="school-level-badge">{{ school.get_category_display }}</div>
+                        <div class="school-logo-placeholder">
+                            {% if school.logo %}
+                                <img src="{{ school.logo.url }}" alt="{{ school.name }}">
+                            {% else %}
+                                {{ school.name|slice:":2"|upper }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="school-card-body">
+                        <h5 class="school-name">{{ school.name }}</h5>
+                        <p class="school-location"><i class="bi bi-geo-alt"></i> {{ school.city }}, Uganda</p>
+                        <p class="school-desc">{{ school.description|truncatewords:20 }}</p>
+                        <div class="school-card-footer">
+                            <span class="school-tag">{{ school.get_category_display }}</span>
+                            <a href="{% url 'school_detail' school.id %}" class="btn btn-school-view">View School</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">No featured schools yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 <!-- How It Works -->
 <section class="how-section">
     <div class="container">
@@ -97,74 +109,6 @@
     </div>
 </section>
 
-<!-- Featured Schools -->
-<section class="schools-section">
-    <div class="container">
-        <div class="section-header d-flex justify-content-between align-items-end">
-            <div>
-                <span class="section-tag">Featured</span>
-                <h2 class="section-title">Featured Schools</h2>
-            </div>
-            <a href="{% url 'schools' %}" class="btn btn-outline-view">View All Schools →</a>
-        </div>
-        <div class="row gy-4 mt-3">
-            <div class="col-lg-4 col-md-6">
-                <div class="school-card">
-                    <div class="school-card-img" style="background: linear-gradient(135deg, #1a1a2e, #16213e);">
-                        <div class="school-level-badge">Secondary</div>
-                        <div class="school-logo-placeholder">GA</div>
-                    </div>
-                    <div class="school-card-body">
-                        <h5 class="school-name">Greenfield Academy</h5>
-                        <p class="school-location"><i class="bi bi-geo-alt"></i> Kampala, Uganda</p>
-                        <p class="school-desc">A premier institution offering world-class education with a focus on science and technology.</p>
-                        <div class="school-card-footer">
-                            <span class="school-tag">Science</span>
-                            <span class="school-tag">Technology</span>
-                            <a href="#" class="btn btn-school-view">View School</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="school-card">
-                    <div class="school-card-img" style="background: linear-gradient(135deg, #0f3460, #533483);">
-                        <div class="school-level-badge">Primary</div>
-                        <div class="school-logo-placeholder">SM</div>
-                    </div>
-                    <div class="school-card-body">
-                        <h5 class="school-name">St. Mary's College</h5>
-                        <p class="school-location"><i class="bi bi-geo-alt"></i> Entebbe, Uganda</p>
-                        <p class="school-desc">Nurturing young minds with a balanced curriculum rooted in values, arts and academics.</p>
-                        <div class="school-card-footer">
-                            <span class="school-tag">Arts</span>
-                            <span class="school-tag">Values</span>
-                            <a href="#" class="btn btn-school-view">View School</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="school-card">
-                    <div class="school-card-img" style="background: linear-gradient(135deg, #1b4332, #2d6a4f);">
-                        <div class="school-level-badge">University</div>
-                        <div class="school-logo-placeholder">KU</div>
-                    </div>
-                    <div class="school-card-body">
-                        <h5 class="school-name">Kira University</h5>
-                        <p class="school-location"><i class="bi bi-geo-alt"></i> Jinja, Uganda</p>
-                        <p class="school-desc">Leading university in East Africa offering undergraduate and postgraduate programmes.</p>
-                        <div class="school-card-footer">
-                            <span class="school-tag">Medicine</span>
-                            <span class="school-tag">Law</span>
-                            <a href="#" class="btn btn-school-view">View School</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- CTA Section -->
 <section class="cta-section">

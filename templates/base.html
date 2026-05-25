@@ -14,7 +14,7 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg" id="mainNav">
+<nav class="navbar navbar-expand-lg fixed-top" id="mainNav">
     <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">
             <span class="brand-icon"></span> Apply
@@ -27,19 +27,42 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home' %}">Home</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'schools' %}">Schools</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Schools
+                    </a>
+                    <ul class="dropdown-menu schools-dropdown">
+                        <li><a class="dropdown-item" href="{% url 'schools' %}">
+                            <i class="bi bi-grid me-2"></i> All Schools
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'schools_by_category' 'nursery' %}">
+                            <i class="bi bi-star me-2"></i> Nursery Schools
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'schools_by_category' 'primary' %}">
+                            <i class="bi bi-book me-2"></i> Primary Schools
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'schools_by_category' 'secondary' %}">
+                            <i class="bi bi-mortarboard me-2"></i> Secondary Schools
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'schools_by_category' 'university' %}">
+                            <i class="bi bi-bank me-2"></i> Universities
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'schools_by_category' 'vocational' %}">
+                            <i class="bi bi-tools me-2"></i> Vocational / Technical
+                        </a></li>
+                    </ul>
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Dashboard</a>
+                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                 </li>
                 <li class="nav-item ms-2">
-                    <a class="btn btn-outline-primary btn-sm" href="#">Logout</a>
+                    <a class="btn btn-nav-primary" href="{% url 'logout' %}">Logout</a>
                 </li>
                 {% else %}
                 <li class="nav-item ms-2">
-                    <a class="btn btn-ghost-nav" href="{% url 'login' %}">Login</a>
+                    <a class="btn btn-nav-primary" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item ms-2">
                     <a class="btn btn-nav-primary" href="{% url 'register_school' %}">Register School</a>

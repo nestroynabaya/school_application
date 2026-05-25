@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard — Apply{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="container py-5 mt-3">
+
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Welcome, {{ user.first_name }} 👋</h1>
+                <p class="dashboard-subtitle">Track and manage your school applications</p>
+            </div>
+            <a href="{% url 'schools' %}" class="btn btn-dash-primary">
+                <i class="bi bi-plus-lg me-2"></i> Apply to a School
+            </a>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row gy-3 mb-5">
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(165,28,48,0.1); color: var(--accent);">
+                        <i class="bi bi-send"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">{{ applications|length }}</span>
+                        <span class="dash-stat-label">Total Applications</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(245,158,11,0.1); color: #d97706;">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">{{ applications|length }}</span>
+                        <span class="dash-stat-label">Under Review</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(16,185,129,0.1); color: #059669;">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">
+                            {{ applications|dictsort:"status"|length }}
+                        </span>
+                        <span class="dash-stat-label">Accepted</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="dash-stat-card">
+                    <div class="dash-stat-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <div class="dash-stat-info">
+                        <span class="dash-stat-number">{{ applications|length }}</span>
+                        <span class="dash-stat-label">Payments Made</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applications Table -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h5>My Applications</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table dash-table">
+                    <thead>
+                        <tr>
+                            <th>School</th>
+                            <th>Category</th>
+                            <th>Programme</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td><strong>{{ app.school.name }}</strong></td>
+                            <td>{{ app.school.get_category_display }}</td>
+                            <td>{{ app.programme }}</td>
+                            <td>
+                                {% if app.payment %}
+                                    <span class="status-badge status-accepted">Paid</span>
+                                {% else %}
+                                    <span class="status-badge status-unpaid">Unpaid</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ app.status }}">
+                                    {{ app.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ app.submitted_at|date:"d M Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                You haven't applied to any school yet.
+                                <a href="{% url 'schools' %}">Browse schools</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
